@@ -96,6 +96,14 @@ function makeBasicCard (front, back) {
 
 function makeClozeCard (string, cloze) { 
     console.log("let's make a cloze card"); 
+    console.log(string);
+    console.log(cloze); 
+    if (string.includes(cloze)) { 
+
+    } else { 
+        console.log ('Valid cloze card entry not entered'.red); 
+        return flashcardObj.flashInit(); 
+    }
 }
 
 flashcardObj.flashInit();
