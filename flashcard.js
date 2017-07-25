@@ -3,63 +3,99 @@ var ClozeCard = require('./ClozeCard.js');
 var inquirer = require('inquirer');
 var colors = require('colors'); 
 
-// function BasicCard (front, back) { 
-//     this.frontText = front; 
-//     this.backText = back;
-// } 
-
-
-// function ClozeCard (text, cloze) { 
-//     this.fullText = cloze + text; 
-//     this.partialText = text; 
-//     this.cloze = cloze; 
-// }
-
-
-var flashDeck = [];
-function makeFlashDeck() {
-    console.log('Time to make a flashcard deck');
+var flashcardObj = { 
+    flashDeck: [],
+    cardType: '',
+    flashInit: function () { 
+        inquirer.prompt([
+            {
+            type: 'rawlist',
+            name: 'verify',
+            message: 'What kind of flash card do you wish to create?', 
+            choices: ['Yes', 'No']
+            }
+        ]).then(function (answers) { 
+            if (answers.verify === 'Yes') { 
+                return askFlashCard();
+            } else { 
+                return console.log ("Oh well, maybe next time")    
+            }  
+        });
+    } 
 }
 
-makeFlashDeck();
+function askFlashCard() {
+    console.log('Time to make a flashcard deck');
 
-inquirer.prompt([
-    {
+    inquirer.prompt([{
         type: 'rawlist',
         name: 'flashcard',
         message: 'What kind of flash card do you wish to create?', 
-        choices: ['Basic flashcard', 'Cloze flashcard']
-    }, 
-    {
-        type: 'input',
-        name: 'front',
-        message: "What should go on the front?" 
-    },
-    {
-        type: 'input',
-        name: 'back',
-        message: 'What should go on the back?',
-    } 
-]).then(function (answers) {
-    // Use user feedback for... whatever!!
-    console.log(answers.flashcard.blue);
-    makeflashcard(answers.flashcard, answers.front, answers.back); 
-}); 
+        choices: ['Basic', 'Cloze']
+    }]).then(function (answers) { 
+        console.log(answers.flashcard);
+        flashcardObj.cardType = answers.flashcard; 
+        return makeFlashCard(flashcardObj.cardType); 
+    // Use user feedback for... whatever!! 
+    });
+}
 
-function makeflashcard (type, front, back) { 
+function makeFlashCard (type) { 
+
+    if (type === 'Basic' ) {
+        inquirer.prompt([
+        
+            {
+                type: 'input',
+                name: 'front',
+                message: "What should go on the front?" 
+            },
+            {
+                type: 'input',
+                name: 'back',
+                message: 'What should go on the back?',
+            } 
+        ]).then(function (answers) { 
+            return makeBasicCard(answers.front, answers.back); 
+        }); 
+    } else { 
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'fullString',
+                message: "Write the full fact?" 
+            },
+            {
+                type: 'input',
+                name: 'cloze',
+                message: 'What phrase should be excluded from front of card?',
+            } 
+        ]).then(function (answers) {
+            // Use user feedback for... whatever!!
+            console.log(answers.fullString.blue); 
+
+            return makeClozeCard(answers.fullString, answers.cloze); 
+        }); 
+    }
+}
+
+function makeBasicCard (front, back) { 
     
-    console.log('flashcard maker reached'.green);
-    console.log('type of card: ' + type);
-    console.log('Front of card: ' + front + '\nBack of card: ' + back); 
+    console.log('flashcard maker reached'.green); 
 
-    if (type === 'Basic flashcard') { 
-        console.log()
         var quizCard = new BasicCard(front, back);
         // console.log(quizCard);
         console.log('Front: ' + quizCard.frontText.green);
         console.log('Back: ' + quizCard.backText.red);
-    } else {
-        var quizCard = new ClozeCard(front, back);
+   
         console.log(quizCard);
-    }
-} 
+        flashcardObj.flashDeck.push(quizCard);
+        console.log(flashcardObj.flashDeck); 
+        return flashcardObj.flashInit();
+}  
+
+function makeClozeCard (string, cloze) { 
+    console.log("let's make a cloze card"); 
+}
+
+flashcardObj.flashInit();
