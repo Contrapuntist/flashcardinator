@@ -11,7 +11,7 @@ var flashcardObj = {
             {
             type: 'rawlist',
             name: 'verify',
-            message: 'What kind of flash card do you wish to create?', 
+            message: 'Do you want to create a flashcard?', 
             choices: ['Yes', 'No']
             }
         ]).then(function (answers) { 
@@ -73,7 +73,6 @@ function makeFlashCard (type) {
         ]).then(function (answers) {
             // Use user feedback for... whatever!!
             console.log(answers.fullString.blue); 
-
             return makeClozeCard(answers.fullString, answers.cloze); 
         }); 
     }
@@ -95,15 +94,21 @@ function makeBasicCard (front, back) {
 }  
 
 function makeClozeCard (string, cloze) { 
-    console.log("let's make a cloze card"); 
-    console.log(string);
-    console.log(cloze); 
+    
+    // console.log('let\'s make a cloze card'.cyan); 
+    // console.log(string);
+    // console.log(cloze); 
     if (string.includes(cloze)) { 
-
+        var quizClozeCard = new ClozeCard(string, cloze);
+        quizClozeCard.createPartialText();
+        console.log('Front: ' + quizClozeCard.partialText.green);
+        console.log('Back: ' + quizClozeCard.fullText.red); 
+        flashcardObj.flashDeck.push(quizClozeCard);
+        return flashcardObj.flashInit();
     } else { 
-        console.log ('Valid cloze card entry not entered'.red); 
+        console.log ('Valid cloze card entry not entered'); 
         return flashcardObj.flashInit(); 
     }
 }
 
-flashcardObj.flashInit();
+flashcardObj.flashInit(); 
