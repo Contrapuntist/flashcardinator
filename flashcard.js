@@ -18,7 +18,7 @@ var flashcardObj = {
             if (answers.verify === 'Yes') { 
                 return askFlashCard();
             } else { 
-                return console.log ("Oh well, maybe next time")    
+                return showFlashDeck();    
             }  
         });
     } 
@@ -108,6 +108,17 @@ function makeClozeCard (string, cloze) {
     } else { 
         console.log ('Valid cloze card entry not entered'); 
         return flashcardObj.flashInit(); 
+    }
+}
+
+function showFlashDeck() { 
+    if (flashcardObj.flashDeck.length != 0) {
+        console.log("Here is your flashcard deck".yellow) 
+        for (var i = 0; i < flashcardObj.flashDeck.length; i++ ) {
+            console.log(flashcardObj.flashDeck[i]);
+        }
+    } else { 
+        return console.log('Bummer. I\'d show you your flashcard deck, but you didn\'t make any!'.bgWhite.red);
     }
 }
 
